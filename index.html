@@ -1,0 +1,135 @@
+<!-- This Script Dev By Saiful Islam And Sajibe Kanti -->
+
+
+<!DOCTYPE html>
+    <html lang="">
+        <head>
+            <meta charset="utf-8">
+            <meta http-equiv="X-UA-Compatible" content="IE=edge">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+            <meta name="apple-mobile-web-app-capable" content="yes">
+            <meta name="apple-mobile-web-app-status-bar-style" content="black">
+            <meta name="apple-mobile-web-app-title" content="Material Design Lite">
+            <title>Title Page</title>
+    
+            <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+            <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.grey-orange.min.css">
+            <link rel="stylesheet" href="css/styles.css">
+            
+        </head>
+        <body>
+            
+            <div id="app" class="blog blog--blogpost">
+            <!-- Always shows a header, even in smaller screens. -->
+                <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+                  <header class="mdl-layout__header">
+                    <div class="mdl-layout__header-row">
+                      <!-- Title -->
+                      <span class="mdl-layout-title">{{ title }}</span>
+                      <!-- Add spacer, to align navigation to the right -->
+                      <div class="mdl-layout-spacer"></div>
+                      
+                    </div>
+                  </header>
+                  <div class="mdl-layout__drawer">
+                    <span class="mdl-layout-title">{{ title }}</span>
+                    <nav class="mdl-navigation">
+                      <a class="mdl-navigation__link" href="">Link</a>
+                      <a class="mdl-navigation__link" href="">Link</a>
+                      <a class="mdl-navigation__link" href="">Link</a>
+                      <a class="mdl-navigation__link" href="">Link</a>
+                    </nav>
+                  </div>
+                  <main class="mdl-layout__content">
+                    <div class="page-content">
+
+                        <ul id="posts" class="mdl-list" style="width: 100%;display:none;">
+                            <li class="mdl-list__item mdl-list__item--three-line" v-for="(item, index) in posts" v-on:click="singlePost(index);">
+                                <span class="mdl-list__item-primary-content">
+                                    <img class="mdl-list__item-icon" :src="item.author.avatar" alt="" style="width: 50px;height: 50px;border-radius: 50px;">
+                                    <span>{{ item.author.name }}</span>
+                                    <span class="mdl-list__item-text-body">
+                                        {{ item.title }}
+                                    </span>
+                                </span>
+                                <span class="mdl-list__item-secondary-content">
+                                    <a class="mdl-list__item-secondary-action" href="#"><i class="material-icons">star</i></a>
+                                </span>
+                            </li>
+                        </ul>
+
+                        <div id="post" style="display: none;">
+                            <div class="demo-blog__posts mdl-grid" >
+                                <div class="mdl-card mdl-shadow--4dp mdl-cell mdl-cell--12-col">
+                                    <div class="mdl-card__media mdl-color-text--grey-50" id="fImage">
+                                      <h3>{{ post.title }}</h3>
+                                    </div>
+                                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text meta">
+                                      <div class="minilogo"></div>
+                                      <div>
+                                        <strong>{{ post.author.name }}</strong>
+                                        <span>{{ post.date }}</span>
+                                      </div>
+                                      <div class="section-spacer"></div>
+                                      <div class="meta__favorites">
+                                        <i class="material-icons" role="presentation">favorite</i>
+                                        <span class="visuallyhidden">favorites</span>
+                                      </div>
+                                      <div>
+                                        <i class="material-icons" role="presentation">bookmark</i>
+                                        <span class="visuallyhidden">bookmark</span>
+                                      </div>
+                                      <div>
+                                        <i class="material-icons" role="presentation">share</i>
+                                        <span class="visuallyhidden">share</span>
+                                      </div>
+                                    </div>
+                                    <div class="mdl-color-text--grey-700 mdl-card__supporting-text" v-html="post.content"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                  </main>
+                </div>
+            </div>
+            <!-- jQuery -->
+            <script src="https://code.jquery.com/jquery.js"></script>
+            <script defer src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+            <script src="https://unpkg.com/vue"></script>
+            <script src="https://cdn.jsdelivr.net/vue.resource/1.3.1/vue-resource.min.js"></script>
+            <!-- Simple Code -->
+			<script type="text/javascript">
+                var app = new Vue({
+                    el: '#app',
+                    data: {
+                        title: 'Sajib Home',
+                        posts: [],
+                        post: {featured_image:{},'author':{}},
+                    },
+                    methods: {
+                        loadPost: function(){
+                            this.$http.get('http://techcitybd.info/?rest_route=/wp/v2/posts').then(response => {
+                                this.posts = response.body;
+                                $("#post").hide();
+                                $("#posts").show();
+                            }, response => {
+                                this.errorHand(response);
+                            });
+                        }, 
+                        singlePost: function(id){
+                            $("#posts").hide();
+                            $("#post").show();
+                            this.post = this.posts[id];
+                            console.log(this.posts[id]);
+                            $("#fImage").css('background-image', 'url("' + this.post.featured_image.source + '")');
+                        }
+                    },
+                    mounted : function(){
+                        this.loadPost();
+                    }
+                });
+            </script>
+        </body>
+
+    </html> 
